@@ -103,6 +103,11 @@ theme_minimal()
 ::: {.solution}
 ```{r}
 met |>
+count(station) |>
+ggplot(aes(x = station, y = n )) +
+  geom_col(width = 0.5) +
+  theme_minimal()
+
   
 ```
 
@@ -112,6 +117,13 @@ met |>
 - [ ] Now make a *deliberately misleading* version of this plot, which suggests that Cwmystwyth gets several times as much rain as Stornoway. Which of the principles in the Week 6 notes does your plot break? How could a reader spot the trick?
 
 ::: {.solution}
+```{r}
+met |>
+  group_by(station) |>
+  summarise(mean_rain = mean(rain, na.rm = TRUE)) |>
+  ggplot(aes(x = station, y = mean_rain)) +
+  geom_col()
+```
 
 :::
 
@@ -120,6 +132,12 @@ Bar charts of averages hide how much the rainfall varies from month to month, so
 - [ ] Look up how to produce a box plot with `ggplot`, and produce a box plot of rainfall at each station. Are there any outliers at the low end? Why not?
 
 ::: {.solution}
+```{r}
+met |>
+  ggplot(aes(x = station, y = rain)) +
+  geom_boxplot(width = 0.2) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
 
 :::
 
@@ -127,6 +145,19 @@ Bar charts of averages hide how much the rainfall varies from month to month, so
 - [ ] Redraw the histogram with a logarithmic $x$ axis (see the Week 6 notes). What happens to the shape? Read the warning messages carefully, and compare the number of rows removed with the previous histogram. Which months have been dropped, and why?
 
 ::: {.solution}
+```{r}
+met |>
+  ggplot(aes(x = rain)) +
+  geom_histogram(bins = 20) +
+  geom_density(linewidth = 1) +
+  scale_fill_viridis_d(name = "Station")+
+  labs(
+    title = "Histogram",
+    x = "Rainfall",
+    y = "Count"
+)+
+  theme_minimal()
+```
 
 :::
 
