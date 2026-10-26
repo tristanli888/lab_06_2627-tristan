@@ -48,9 +48,10 @@ met <- met |>
 ```{r}
 met |>
 filter(station == "southampton", month == 7) |>
-ggplot(aes(x = date, y = tmax, colour = station)) +
-geom_line(linewidth = 1) +
-theme_minimal()
+ggplot(aes(x = date, y = tmax)) +
+geom_line() +
+coord_cartesian(xlim = c(ymd("1940-07-01"), ymd("1943-07-01")))
+  
 ```
 
 
@@ -59,7 +60,7 @@ theme_minimal()
 Next we look at every month of the year, not just July, at four stations.
 
 - [x] Produce a scatter plot of the maximum temperature `tmax` against `date` for every month in Southampton, Oxford, Sheffield and Paisley. Colour the points by station.
-- [ ] Look up the function `geom_smooth`. Use the function to overlay a smooth trend line on the points. Make sure the line is visible by adjusting the `alpha` property on `geom_point`.
+- [x] Look up the function `geom_smooth`. Use the function to overlay a smooth trend line on the points. Make sure the line is visible by adjusting the `alpha` property on `geom_point`.
 - [ ] What does the line tell you about the trend of historical maximum temperatures?
 
 ::: {.solution}
@@ -68,6 +69,7 @@ met |>
 filter(station %in% c("southampton", "oxford", "sheffield", "paisley")) |>
 ggplot(aes(x = date, y = tmax, colour = station)) +
 geom_point() +
+geom_smooth() +
 theme_minimal()
 ```
 
@@ -76,11 +78,21 @@ theme_minimal()
 The plot above mixes together every month of the year, so the seasonal cycle hides the long-term trend.
 Averaging over each year removes the seasonal cycle, since every (complete) year contains one of each month.
 
-- [ ] For each of Southampton, Oxford, Sheffield and Paisley, compute the mean `tmax` in each year. Plot these annual means against `year` as a line plot, coloured by station, and add a smooth trend line. Is the trend easier to see now?
+- [x ] For each of Southampton, Oxford, Sheffield and Paisley, compute the mean `tmax` in each year. Plot these annual means against `year` as a line plot, coloured by station, and add a smooth trend line. Is the trend easier to see now?
 - [ ] Some of the annual means look suspicious. Which years have the lowest and highest annual means? How many months of data is each annual mean based on? (Hint: how would you count the *non-missing* values of a column inside `summarise`?)
 - [ ] Redraw the plot using only years with a complete set of 12 months. Roughly how much have annual mean maximum temperatures risen at these stations?
 
 ::: {.solution}
+```{r}
+met |>
+filter(station %in% c("southampton", "oxford", "sheffield", "paisley")) |>
+group_by(station, year) |>
+summarise(mean_tmax = mean(tmax, na.rm = TRUE)) |>
+ggplot(aes(x = year, y = mean_tmax, colour = station)) +
+geom_line() +
+geom_smooth(se = FALSE) +
+theme_minimal()
+```
 
 :::
 
@@ -89,6 +101,10 @@ Averaging over each year removes the seasonal cycle, since every (complete) year
 - [ ] Produce a bar chart showing how many monthly records there are for each station, using `geom_bar()`. Then produce the same chart using `count()` and `geom_col()`. (Hint: to make the station names readable, add `theme(axis.text.x = element_text(angle = 45, hjust = 1))` to your plot.)
 
 ::: {.solution}
+```{r}
+met |>
+  
+```
 
 :::
 
